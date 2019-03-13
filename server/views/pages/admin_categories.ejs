@@ -1,0 +1,231 @@
+<% extend('../partials/template_admin') %>
+
+<div>
+    <div class="form_box">
+        <form id="category_form" class="forms" method="POST">
+            <div class="choiches">
+                <!-- Navn -->
+                <div class="form_choiche">
+                    <div class="form_text">
+                        <div class="form_title">
+                            <label for="category_name">Navn</label>
+                        </div>
+
+                        <div class="form_error">
+                            <span id="err_name" class="error_msg">
+                                <%= (typeof error_msg != 'undefined' ? error_msg.name : '') %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form_field">
+                        <input type="text" name="category_name" id="category_name"
+                            value="<%= (typeof one_category != 'undefined' ? one_category.category_name: '') %>"
+                            placeholder="Indtast Navn">
+                    </div>
+                </div>
+
+                <!-- Kategori -->
+                <% if(formtype === 'opret') { %>
+                <div class="form_choice">
+                    <div class="form_text">
+                        <div class="form_title">
+                            <label for="category_category">Kategori</label>
+                        </div>
+
+                        <div class="form_error">
+                            <span id="err_category" class="error_msg">
+                                <%= (typeof error_msg != 'undefined' ? error_msg.category : '') %>
+                            </span>
+                            <span id="err_categoryDelete" class="error_msg">
+                                    <%= delete_error %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form_field">
+                        <select name="category_category" id="category_category">
+                            <% let topRightValue = 0;
+                                if(all_categories.length > 0) { %>
+                            <option value="">Vælg Kategori</option>
+                            <% 
+                                let endPositions = [];
+                                (all_categories || []).forEach(category =>{ 
+                                    if(category.category_rgt > topRightValue) {
+                                        topRightValue = category.category_rgt;
+                                    } 
+                                    if(endPositions.length > 0) {
+                                        while(endPositions[endPositions.length - 1] < category.category_rgt) {
+                                            endPositions.pop();
+                                        }
+                                    }
+                                let indent = '-- ';
+                            %>
+
+                            <option value="<%= category.category_lft %>"
+                                <%=(category.category_id===one_category.category_id ? "selected" : "" ) %>>
+                                <%= indent.repeat(endPositions.length)%>
+                                <%= category.category_name %>
+                            </option>
+
+                            <% endPositions.push(category.category_rgt) 
+                            }) %>
+                                <option value="<%= topRightValue %>">Ny</option>
+                            <% } else { %>
+                                <option value="0">Ny</option>
+                            <% } %>
+                        </select>
+
+                        <% if(all_categories.length > 0) { %>
+                        <input type="hidden" name="compareCategories"
+                            value="<%= topRightValue %>">
+                        <% } else { %>
+                        <input type="hidden" name="compareCategories" value="0">
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+            </div> <!-- Choiches End -->
+
+            <!-- Knapper -->
+            <div class="form_actions">
+                <button type="submit" id="categorySave" class="btn linear_gr">Gem</button>
+                <a href="/admin/kategorier">Annuler</a>
+            </div>
+        </form>
+    </div> <!-- Form Box End -->
+
+
+    <% if(all_categories.length > 0) { %>
+    <div class="table_box">
+        <table id="category_table" class="tables">
+            <thead>
+                <tr>
+                    <th>Handling</th>
+                    <th>#</th>
+                    <th>Navn</th>
+                    <th>Venstre</th>
+                    <th>Højre</th>
+                    <th>Top</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% (all_categories || []).forEach(category =>{ %>
+                <tr>
+                    <td>
+                        <a href="/admin/kategorier/ret/<%= category.category_id %>">Ret</a>
+                        <a href="/admin/kategorier/slet/<%= category.category_id %>" onclick="return confirm('Er du sikker?')">Slet</a>
+                    </td>
+
+                    <td>
+                        <%= category.category_id %>
+                    </td>
+
+                    <td>
+                        <%= category.category_name %>
+                    </td>
+
+                    <td>
+                        <%= category.category_lft %>
+                    </td>
+
+                    <td>
+                        <%= category.category_rgt %>
+                    </td>
+
+                    <td>
+                        <%= category.category_top %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">oversigt over kategorier</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <% } %>
+</div>
+
+
+<div class="category_box">
+    <ul class="category_list">
+        <% let endPositionsDisplay = [];
+        (all_categories || []).forEach(category =>{ 
+        if(endPositionsDisplay.length > 0) {
+            while(endPositionsDisplay[endPositionsDisplay.length - 1] < category.category_rgt) {
+                endPositionsDisplay.pop();
+            }
+        }
+        let indent = '-- '; %>
+
+        <li>
+            <% if(category.category_top == 1) { %>
+            <p class="category_primary">
+                <%= category.category_name %>
+            </p>
+            <% } else { %>
+            <p class="category_subcategory">
+                <%= indent.repeat(endPositionsDisplay.length)%>
+                <%= category.category_name %>
+            </p>
+            <% } %>
+        </li>
+        <% endPositionsDisplay.push(category.category_rgt) 
+    }) %>
+    </ul>
+</div>
+
+
+<script>
+    document.querySelector('#categorySave').addEventListener('click', (event) => {
+        event.preventDefault();
+        // ryd alle eksisterende fejleskeder 
+        let error_messages = document.querySelectorAll('.error_msg');
+        error_messages.forEach(function (error_msg) {
+            error_msg.textContent = '';
+        });
+
+        let form = document.querySelector('#category_form');
+        // form.submit();
+
+        // hent alle værdierne fra formular felterne 
+        let values = {};
+        for (let i = 0; i < form.length; i++) {
+            // '.name.split('_')[1]' benyttes til at fjerne 'category_' fra hvert et felt
+            if (form[i].name.split('_')[1] != undefined) {
+                values[form[i].name.split('_')[1]] = form[i].value;
+            }
+        }
+
+        // valider hvert felt og opretter fejlbeskeder
+        let error_msg = {};
+
+        // her foretages valideringen som normalt.
+        if (values.name == undefined || values.name == "") {
+            error_msg.name = "Udfyld Navn (Client Side)";
+        }
+
+        let url = window.location.href.split('/');
+
+        if (url[url.length - 2] != 'ret') {
+            if (values.category == undefined || values.category == '') {
+                error_msg.category = "Vælg Kategori (Client Side)";
+            }
+        }
+
+
+        // hvis der er 1 eller flere fejl, skal der udskrives fejl eller sendes form 
+        if (Object.keys(error_msg).length > 0) {
+            Object.keys(error_msg).forEach(function (key) {
+                // key feltet der indeholder en fejl for at finde span tagget der hvor '#err_' skal fjernes
+                document.querySelector(`#err_${key}`).textContent = error_msg[key];
+            });
+        }
+        else {
+            form.submit();
+        }
+    })
+</script>

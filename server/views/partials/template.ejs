@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        <%= title %>
+    </title>
+    <!-- FontAwesome Css -->
+    <link rel="stylesheet" type="text/css" href="/styles/fontawesome-free-5.7.1/css/all.css">
+    <link rel="stylesheet" href="/styles/styles.css">
+
+    <script src="/scripts/helpers.js"></script>
+    <script src="/scripts/cart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>   
+            <h1><%= title %></h1>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <div class="nav-brand">
+                <h2>Frontend</h2>
+            </div>
+            <div class="nav-toggle">
+                <button class="nav-toggle-btn"><i class="fas fa-bars"></i></button>
+            </div>
+            <ul class="nav-list">
+                <li class="<%= (page=='index' ? 'active' : '') %>">
+                    <a href="/">
+                        <i class="fas fa-home"></i>Forsiden
+                    </a>
+                </li>
+
+                <li class="<%= (page=='about' ? 'active' : '') %>">
+                    <a href="/om_os">
+                        <i class="fas fa-info-circle"></i>Om Os
+                    </a>
+                </li>
+
+                <li class="<%= (productNav == 'using' ? 'active' : '') %>">
+                    <a href="/produkter/kategori/<%= first_subcategory_id %>">
+                        <i class="fas fa-store"></i>Butikken
+                    </a>
+                </li>
+
+                <% if(session.user_rank === 10) { %>
+                    <li class="<%= (page=='user_profile' ? 'active' : '') %>">
+                        <a href="/bruger/profil">
+                            <i class="fas fa-user-circle"></i>Profil
+                        </a>
+                    </li>
+                    <li class="<%= (page=='user_edit' ? 'active' : '') %>">
+                        <a href="/bruger/rediger">
+                            <i class="fas fa-user-cog"></i>Rediger Profil
+                        </a>
+                    </li>
+                <% } %>
+                
+                <% if(session.user_rank >= 10) { %>
+                <li>
+                    <a href="/logud">
+                        <i class="fas fa-sign-out-alt"></i>Logud
+                    </a>
+                </li>
+                <% } else { %>
+                <li class="<%= (page=='login' ? 'active' : '') || (page=='register' ? 'active' : '') || (page=='verify' ? 'active' : '') || (page=='forgot' ? 'active' : '') %>">
+                    <a href="/logind">
+                        <i class="fas fa-sign-in-alt"></i>Logind
+                    </a>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+        
+        <!-- Main -->
+        <main class="main_frontend">     
+            <div class="content_box">
+                <%- content %>
+            </div>
+
+            <div class="aside_box">
+                <div class="cart_box">
+                    <h4>Kurv</h4>
+                    <table id="miniCart" class="mini_cart_table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:60px;">Antal</th>
+                                <th style="min-width:160px;">Navn</th>
+                                <th style="min-width:125px;">Pris</th>
+                            </tr>
+                        </thead>
+    
+                        <tbody>
+    
+                        </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">Total Pris:</td>
+                            <td class="miniCartTotal"></td>
+                        </tr>
+                        <tr>
+                            <td class="cart_actions" colspan="3">
+                                <button class="btn linear_gr" id="deleteCart">Tøm</button>
+                                <a href="/kassen">Til kassen</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    </table>
+                </div>
+
+                <div class="category_box">
+                    <ul class="category_list">
+                        <% let endPositions = [];
+                        (all_categories || []).forEach(category =>{ 
+                            if(endPositions.length > 0) {
+                                while(endPositions[endPositions.length - 1] < category.category_rgt) {
+                                    endPositions.pop();
+                                }
+                            }
+                            let indent = '-- '; %>
+                
+                        <li>
+                            <% if(category.category_top == 1) { %>
+                            <p class="category_primary"><%= category.category_name %></p>
+                            <% } else { %>
+                            <a class="category_subcategory" href="/produkter/kategori/<%= category.category_id %>">
+                                <%= indent.repeat(endPositions.length)%>
+                                <%= category.category_name %>
+                            </a>
+                            <% } %>
+                        </li>
+                        <% endPositions.push(category.category_rgt) 
+                                }) %>
+                        <input type="hidden" name="compareCategories" value="<%= all_categories[all_categories.length -1].category_rgt %>">
+                    </ul>
+                </div>   
+            </div> 
+            
+            
+        </main>
+               
+
+        <!-- Footer -->
+        <footer>
+            <h2>2019 Andreas Kraft</h2>
+        </footer>
+    </div>
+
+    <script>
+        // tøm kurven knap
+        document.querySelector('#deleteCart').addEventListener('click', (event) => {
+            event.preventDefault();
+            if (Cart.Total > 0) {
+                if (confirm('er du sikker på du vil tømme kurven?')) {
+                    Cart.DeleteCart();
+                    updateMiniCart();
+                }
+            }
+        })
+
+        // funktion til atopdatere minikurvens indhold, når der pittes vare i kurven.
+        function updateMiniCart() {
+            // tøm minikurven, så de nye informationer kan tilføjes
+            // uden at spekulere over hvad der var i kurven tidligere
+            let mini_cart = document.querySelector('#miniCart tbody');
+            while (mini_cart.hasChildNodes()) {
+                mini_cart.removeChild(mini_cart.firstChild);
+            }
+            let cart = Cart.TakeCart();
+            if (cart.length > 0) {
+                // løb igennem alle produkter der er gemt i kurv-klassen
+                cart.forEach(product => {
+                    // Antal 
+                    let amount = document.createElement('td');
+                    amount.textContent = product.product_amount;
+
+                    // Navn
+                    let name = document.createElement('td');
+                    name.setAttribute('class', 'product_name');
+                    name.textContent = product.product_name;
+
+                    // beregn hvad denne kolonnes totalpris er 
+                    let total = document.createElement('td');
+                    total.textContent = (product.product_price * product.product_amount).toFixed(2) + ' kr.';
+
+                    // knyt alle felterne til rækken
+                    let row = document.createElement('tr');
+                    row.appendChild(amount);
+                    row.appendChild(name);
+                    row.appendChild(total);
+
+                    // knyt rækken til tabellen
+                    mini_cart.appendChild(row);
+                });
+                document.querySelector('.miniCartTotal').textContent = Cart.Total.toFixed(2) + ' kr.';
+            };
+
+
+
+            if (cart.length == 0) {
+                let empty = document.createElement('td');
+                empty.textContent = "din kurv er tom";
+                empty.setAttribute('colspan', '3');
+                document.querySelector('.miniCartTotal').textContent = (0).toFixed(2) + ' kr.';
+                let row = document.createElement('tr');
+                row.appendChild(empty);
+
+                mini_cart.appendChild(row);
+            }
+
+            // tilføj en række til sidst, som indeholder kurvens samlede pris
+            // er kun nødvendig hvis der er produkter i kurven
+            if (cart.length > 0) {
+                let row = document.createElement('tr');
+                mini_cart.appendChild(row);
+            }
+        }
+        updateMiniCart();
+    </script>
+    <script>
+        document.querySelector('.nav-toggle-btn').addEventListener('click', (event) => {
+            event.preventDefault();
+            // console.log('clicked');
+            let navList = document.querySelector('.nav-list');
+            navList.classList.toggle('toggleShow');
+        })
+    </script>
+</body>
+
+</html>

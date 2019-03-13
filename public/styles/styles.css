@@ -1,0 +1,522 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+html {
+  background: url("/images/backgrounds/full/orange_pattern.png") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  /* code to make IE do cover backgrounds as well */
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.orange_pattern.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='orange_pattern.png', sizingMethod='scale')";
+}
+
+.container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content min-content 1fr min-content;
+}
+
+header, footer {
+    color: white;
+    background: #2a2a2a;
+    height: 35px;
+    border-bottom: 2px solid #252525;
+    border-top: 2px solid #252525;
+  }
+  
+/* Main Frontend */
+.main_frontend {
+  margin: 10px;
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-columns: 2.5fr 1fr;  
+}
+
+.content_box {
+
+}
+
+.aside_box {
+  display: grid;
+  grid-template-rows: min-content min-content;
+  grid-row-gap: 10px; 
+}
+
+.cart_box {
+  background: #111;
+  padding: 10px;
+}
+
+.content_wrapper_admin {
+  margin: 10px;
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+/* Main Admin */
+.main_admin {
+
+}
+
+/* ============================================== BUTTONS, TEXT & LINKS ============================================== */
+/* headings and text */
+.linear_gr {
+    background-image: linear-gradient(145deg, rgba(255, 174, 0, 0), rgba(155, 28, 28, 0.6));
+    background-color: orangered; 
+}
+
+.linear_gr:hover {
+    cursor: pointer;
+    color: #111;
+}
+
+.btn {
+    color: #fff;
+    border:none;
+    border-radius: 2px;
+    outline: none;
+    box-shadow: 2px 2px rgba(0, 0, 0, .25);
+}
+
+.link_basic {
+    color: #111;
+    text-decoration: none;
+}
+
+.link_basic:hover, .link_basic:focus {
+    text-decoration: underline;
+}
+
+/* ============================================== NAVIGATION ============================================== */
+.nav-container {
+    background: orangered;
+    border-bottom: 1px solid #252525; 
+}
+
+.nav-list li {
+    list-style: none;
+}
+
+.nav-list li.active {
+  background: gray;
+}
+
+
+.nav-list li:hover {
+    background: grey;
+    cursor: pointer;
+}
+
+.nav-list li a {
+    color: #d1d1d1;
+    text-decoration: none;
+}
+
+.nav-list li a i {
+    width: 25px;
+    color: orange;
+}
+
+/* ============================================== FORMS ============================================== */
+.forms {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.choiches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-column-gap: 20px;
+  grid-row-gap: 10px;
+}
+
+.form_choiche {
+
+}
+
+.form_text {
+  margin-bottom: 1px;
+}
+
+.form_title {
+  display: inline-block;
+
+}
+
+.form_error {
+  float: right;
+  color: white;
+  background: black;
+  font-size: 12px;
+}
+
+.form_field input, .form_field textarea, .form_field select {
+  border-radius: 3px;
+  outline: none;
+  width: 100%;
+}
+
+.form_field input, .form_field select {
+  height: 25px;
+}
+
+.form_field textarea {
+  padding: 0;
+  height: 75px;
+  resize: vertical; 
+}
+
+.form_field input::placeholder{
+  color: slategray;
+}
+
+.form_outer_choiche {
+  margin-top: 10px;
+}
+
+.form_actions {
+  margin: 15px 0;
+}
+
+.form_actions a, .form_actions button {
+  padding: 4px 10px;
+}
+
+#form_type {
+  display: none;
+}
+
+/* ============================================== FORM TABLES ============================================== */
+.table_box {
+  max-width: 90%;
+  margin: 0 auto;
+  max-height: 550px;
+  background: rgba(0, 0, 0, .8);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.tables thead, .tables tfoot {
+  user-select: none;
+  background: #111;
+  color: white;
+}
+
+.tables {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #111;
+}
+
+.tables th, .tables td {
+  text-align: left;
+  padding: 8px;
+}
+
+.tables td {
+  display:table-cell;
+  vertical-align: middle;
+}
+
+.tables tbody tr {
+  background: white;
+}
+
+.tables tbody tr:nth-of-type(2n+1){
+  background: gray;
+}
+
+
+/* ============================================== CART TABLE ============================================== */
+.mini_cart_table {
+  width: 100%;
+  color: white;
+}
+.mini_cart_table td {
+  padding: 3px 0;
+}
+
+.cart_box h4, .mini_cart_table tbody {
+  color: white;
+}
+
+ .mini_cart_table tfoot tr:nth-child(1) {
+  text-align: right;
+}
+
+.mini_cart_table tbody tr td:nth-child(1) {
+  text-align: center;
+}
+
+.mini_cart_table tbody tr td:nth-child(3) {
+  text-align: right;
+}
+
+
+
+.mini_cart_table thead tr th {
+  text-align: left;
+  padding: 3px 2px;
+}
+
+.mini_cart_table thead, .mini_cart_table tfoot {
+  /* background: orange; */
+}
+
+.mini_cart_table tfoot {
+  padding: 10px;
+}
+
+.cart_actions button, .cart_actions a {
+  padding: 2px 10px;
+}
+
+/* ==============   landing Page, Veriy Page, Verfify Key, Reset Page, Password Key  ================== */
+
+
+/* ===============  Categories  ================== */
+.category_box{
+  padding: 10px;
+  background: #111;
+}
+
+.category_list {
+  list-style: none;
+}
+
+.category_primary {
+  padding: 5px;
+  background: orange;
+  color: #111;
+}
+
+.category_subcategory {
+  display: block;
+  background: white;
+  padding: 3px 5px;
+  color: blueviolet;
+  text-decoration: none;
+}
+
+/* ===============  Products  ================== */
+/* paging */
+/* sidetal */
+.page_numbers_div {
+  width: 95%;
+  margin: 0 auto;
+  text-align: right;
+  color: #ff7d03;
+}
+
+.page_numbers_div ul {
+  display: inline-block;
+}
+
+.page_numbers_div ul li {
+  list-style: none;
+}
+
+.page_numbers_div ul li a {
+  text-decoration: none;
+  color: #ff7d03;
+}
+
+.active {
+  color: #ff7d03;
+  border-bottom: 1px solid #ff7d03;
+}
+
+.products_wrapper {
+
+}
+
+
+.product_box {
+  display: grid; 
+  grid-template-columns: 1.25fr .5fr min-content;
+  grid-column-gap: 10px;
+  padding: 10px;
+  background: #111;
+  box-sizing: border-box;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.leftSide {
+  display: grid;
+  grid-template-rows: auto max-content;
+}
+
+.middlePart {
+  text-align: center;
+}
+
+.product_box img {
+  width: 170px;
+}
+
+/* ============================================== MEDIA QUERIES ============================================== */
+/* less than 600px (mobile) */
+@media screen and (max-width: 768px) {
+  header, footer {
+    display: grid;
+    place-items: center;
+  }
+  
+  .nav-container {
+    display: flex;
+    position: relative;
+    padding: .5em 1em;
+  }
+  
+  .nav-brand {
+    height: 35px;
+    line-height: 35px;
+    flex: 1;
+  }
+  
+  .nav-toggle {
+    height: 35px;
+    line-height: 35px;
+  }
+  
+  .nav-list{
+    display: none;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 100%;
+  }
+  
+  .toggleShow {
+    display: block;
+  }
+  
+  .nav-toggle-btn {
+    all: unset;
+    font-size: 25px;
+    color: white;
+  }
+
+  .nav-toggle-btn:hover {
+    cursor: pointer;
+  }
+  
+  .nav-list li {
+    background: rgba(0, 0, 0, .9);
+  }
+  
+  .nav-list li a {
+    padding: 1em;
+    display: block;
+  }
+
+  /* forms */
+  .forms {
+    /* max-width: 90vw; */
+  }
+  /* tables */
+  .table_box {
+    /* max-width: 90vw; */
+  }
+}
+  
+/* larger than 600px (tablet) */
+@media only screen and (min-width: 768px) {
+  .container {
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: min-content 1fr min-content;
+  }
+
+  /* Rykker overskrifter */
+  header, footer {
+    display: grid;
+    place-items: center start;
+  }
+ 
+  header h1, footer h2, .nav-brand h2 {
+    margin-left: 10px;
+  }
+  
+  /* Rykker header main og footer til højre så der er plads til Navigationen i siden */
+  header, main, footer{
+    grid-column: 2 / -1;
+  }
+    
+  .nav-container {
+    background: #111;
+    border-right: 2px solid #252525;
+    grid-column: 1 / 2;
+    grid-row: 1 / -1;
+  }
+  
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-brand{
+    height: 35px;
+    line-height: 35px;
+    background: #2a2a2a;
+    color: white;
+    border-bottom: 2px solid #252525;
+    border-top: 2px solid #252525;
+  }
+    
+  .nav-list li {
+    background: #333333;
+    border-bottom:1px solid #252525;
+    padding-left: 10px;
+  }
+  
+  .nav-list li a {
+    padding: 10px 0 10px 0;
+    display: block;
+  }
+
+  /* forms */
+  .forms {
+    /* max-width: 90%; */
+  }
+
+  /* tables */
+  .table_box {
+    /* max-width: 90%; */
+  }
+}
+  
+/* larger than 1366px (screen) */
+@media (min-width: 1366px) {
+
+}
+
+
+
+
+
+
+
+

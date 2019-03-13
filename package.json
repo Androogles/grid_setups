@@ -1,0 +1,36 @@
+{
+  "name": "grid_setups",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server/app.js",
+    "debug": "node --nolazy --inspect-brk=5858 -r ./server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Androogles/grid_setups.git"
+  },
+  "author": "Andreas Kraft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Androogles/grid_setups/issues"
+  },
+  "homepage": "https://github.com/Androogles/grid_setups#readme",
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.2",
+    "date-and-time": "^0.6.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.2",
+    "express-ejs-extend": "0.0.1",
+    "express-fileupload": "^1.1.1-alpha.1",
+    "express-session": "^1.15.6",
+    "gm": "^1.23.1",
+    "morgan": "^1.9.0",
+    "mysql2": "^1.5.2",
+    "sendmail": "^1.4.1",
+    "uuid": "^3.3.2"
+  }
+}

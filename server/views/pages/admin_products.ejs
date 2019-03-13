@@ -1,0 +1,345 @@
+<% extend('../partials/template_admin') %>
+
+<% if(all_products.length > 0) { %>
+<div class="table_box">
+    <table id="product_table" class="tables">
+        <thead>
+            <tr>
+                <th>Handling</th>
+                <th style="min-width: 175px;">Navn</th>
+                <th style="min-width: 175px;">Model</th>
+                <th style="min-width: 55px;">Pris</th>
+                <th style="min-width: 100px;">Oprettet</th>
+                <th style="min-width: 75px;">Billede</th>
+                <th style="min-width: 50px;">Antal</th>
+                <th style="min-width: 50px;">Min</th>
+                <th style="min-width: 50px;">Max</th>
+                <th style="min-width: 175px;">Kategori</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% (all_products || []).forEach(product =>{ %>
+            <tr>
+                <td>
+                    <a href="/admin/produkter/ret/<%= product.product_id %>">Ret</a>
+                    <a href="/admin/produkter/slet/<%= product.product_id %>" onclick="return confirm('Er du sikker?')">Slet</a>
+                </td>
+
+                <td>
+                    <%= product.product_name %>
+                </td>
+
+                <td>
+                    <%= product.product_model %>
+                </td>
+
+                <td>
+                    <%= product.product_price %>
+                </td>
+
+                <td>
+                    <%= product.product_created %>
+                </td>
+
+                <td>
+                    <img width="35" src="/images/products/resized/<%= product.product_image %>" alt="Product Thumb">
+                </td>
+
+                <td>
+                    <%= product.product_inventory %>
+                </td>
+
+                <td>
+                    <%= product.product_inventory_min %>
+                </td>
+
+                <td>
+                    <%= product.product_inventory_max %>
+                </td>
+
+                <td>
+                    <%= product.category_name %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="10">oversigt over produkter</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<% } %>
+
+
+<div class="form_box">
+    <form id="product_form" class="forms" enctype="multipart/form-data" method="POST">
+        <div class="choiches">
+            <!-- Navn -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_name">Navn</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_name" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.name : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="text" name="product_name" id="product_name"
+                        value="<%= (typeof one_product != 'undefined' ? one_product.product_name: '') %>" placeholder="Indtast Navn">
+                </div>
+            </div>
+        
+            <!-- Model -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_model">Model</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_model" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.model : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="text" name="product_model" id="product_model" value="<%= (typeof one_product != 'undefined' ? one_product.product_model: '') %>" placeholder="Indtast model">
+                </div>
+            </div>
+        
+            <!-- Pris -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_price">Pris</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_price" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.price : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="number" name="product_price" id="product_price" value="<%= (typeof one_product != 'undefined' ? one_product.product_price: '') %>" placeholder="Indtast Pris">
+                </div>
+            </div>
+        
+            <!-- Beholdning -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_inventory">Beholdning</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_inventory" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.inventory : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="number" name="product_inventory" id="product_inventory" value="<%= (typeof one_product != 'undefined' ? one_product.product_inventory: '') %>" placeholder="Indtast Beholdning">
+                </div>
+            </div>
+        
+            <!-- Beholdning Min -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_inventoryMin">Minimum</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_inventoryMin" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.inventoryMin : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="number" name="product_inventoryMin" id="product_inventoryMin" value="<%= (typeof one_product != 'undefined' ? one_product.product_inventory_min: '') %>" placeholder="Indtast Minimum Beholdning">
+                </div>
+            </div>
+        
+            <!-- Beholdning Max -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_inventoryMax">Maximum</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_inventoryMax" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.inventoryMax : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <input type="number" name="product_inventoryMax" id="product_inventoryMax" value="<%= (typeof one_product != 'undefined' ? one_product.product_inventory_max: '') %>" placeholder="Indtast Maximum Beholdning">
+                </div>
+            </div>
+        </div><!-- Choiches End -->
+    
+        <!-- Beskrivelse -->
+        <div class="form_outer_choiche">
+            <div class="form_text">
+                <div class="form_title">
+                    <label for="product_description">Beskrivelse</label>
+                </div>
+    
+                <div class="form_error">
+                    <span id="err_description" class="error_msg">
+                        <%= (typeof error_msg != 'undefined' ? error_msg.description : '') %>
+                    </span>
+                </div>
+            </div>
+    
+            <div class="form_field">
+                <textarea name="product_description" id="product_description"><%= (typeof one_product != 'undefined' ? one_product.product_description: '') %></textarea>
+            </div>
+        </div>
+    
+        <!-- Kategori -->
+        <div class="form_outer_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="product_category">Kategori</label>
+                    </div>
+        
+                    <div class="form_error">
+                        <span id="err_category" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.category : '') %>
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="form_field">
+                    <select name="product_category" id="product_category">
+                        <option value="0">Vælg Kategori</option>
+                        <% 
+                        let endPositions = [];
+                        (all_categories || []).forEach(category =>{ 
+                            if(endPositions.length > 0) {
+                                while(endPositions[endPositions.length - 1] < category.category_rgt) {
+                                    endPositions.pop();
+                                }
+                            }
+                            let indent = '-- ';
+                        %>
+                        <option value="<%= category.category_id %>" <%=(category.category_id===one_product.category_id ? "selected" : "" ) %>>
+                            <%= indent.repeat(endPositions.length)%>
+                                    
+                            <%= category.category_name %>
+                        </option>
+        
+                        <% endPositions.push(category.category_rgt) 
+                        }) %>
+                    </select>
+                </div>
+        </div>
+        
+        <!-- Billede -->
+        <div class="form_outer_choiche">
+            <div>
+                <label for="product_image">Billede</label>
+            </div>
+    
+            <input type="file" name="product_image">
+    
+            <!-- Gammelt billede -->
+            <div>
+                <img src="/images/products/<%= (formtype == "opret" ? "no-image.png" : one_product.product_image) %>" alt="Produkt billede">
+                <input type="hidden" name="product_old_img" value="<%= one_product.product_image %>">
+            </div>
+        </div>
+    
+        <!-- Knapper -->
+        <div class="form_actions">
+            <button type="submit" id="productSave" class="btn linear_gr"><%= formtype %></button>
+            <a href="/admin/produkter">Annuler</a>
+        </div>
+    </form>
+</div> <!-- Form Box End -->
+
+
+<script>
+    document.querySelector('#productSave').addEventListener('click', (event) => {
+        event.preventDefault();
+        // ryd alle eksisterende fejleskeder 
+        let error_messages = document.querySelectorAll('.error_msg');
+        error_messages.forEach(function (error_msg) {
+            error_msg.textContent = '';
+        });
+
+        let form = document.querySelector('#product_form');
+        // form.submit();
+
+        // hent alle værdierne fra formular felterne 
+        let values = {};
+        for (let i = 0; i < form.length; i++) {
+            // '.name.split('_')[1]' benyttes til at fjerne 'product_' fra hvert et felt
+            if (form[i].name.split('_')[1] != undefined) {
+                values[form[i].name.split('_')[1]] = form[i].value;
+            }
+        }
+
+        // valider hvert felt og opretter fejlbeskeder
+        let error_msg = {};
+
+        // her foretages valideringen som normalt.
+        if (values.name == undefined || values.name == "") {
+            error_msg.name = "Udfyld Navn (Client Side)";
+        }
+
+        if (values.model == undefined || values.model == "") {
+            error_msg.model = "Udfyld Model (Client Side)";
+        }
+
+        if (values.price == undefined || isNaN(values.price) || values.price == "") {
+            error_msg.price = "Udfyld pris (Client Side)";
+        }
+
+        if (values.description == undefined || values.description == "") {
+            error_msg.description = "Udfyld Beskrivelse (Client Side)";
+        }
+
+        if (values.inventory == undefined || isNaN(values.inventory) || values.inventory == "") {
+            error_msg.inventory = "Udfyld Beholdning (Client Side)";
+        }
+
+        if (values.inventoryMin == undefined || isNaN(values.inventoryMin) || values.inventoryMin == "") {
+            error_msg.inventoryMin = "Udfyld Min (Client Side)";
+        }
+
+        if (values.inventoryMax == undefined || isNaN(values.inventoryMax) || values.inventoryMax == "") {
+            error_msg.inventoryMax = "Udfyld Max (Client Side)";
+        }
+
+        if (values.category == undefined || values.category == 0) {
+            error_msg.category = "Vælg Katgeori (Client Side)";
+        }
+
+        // hvis der er 1 eller flere fejl, skal der udskrives fejl eller sendes form 
+        if (Object.keys(error_msg).length > 0) {
+            Object.keys(error_msg).forEach(function (key) {
+                // key feltet der indeholder en fejl for at finde span tagget der hvor '#err_' skal fjernes
+                document.querySelector(`#err_${key}`).textContent = error_msg[key];
+            });
+        }
+        else {
+            form.submit();
+        }
+    })
+</script>

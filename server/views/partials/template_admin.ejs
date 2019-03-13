@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        <%= title %>
+    </title>
+    <!-- FontAwesome Css -->
+    <link rel="stylesheet" type="text/css" href="/styles/fontawesome-free-5.7.1/css/all.css">
+    <script src="/scripts/helpers.js"></script>
+    <link rel="stylesheet" href="/styles/styles.css"> 
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1><%= title %></h1>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <div class="nav-brand">
+                <h2>Administration</h2>
+            </div>
+            <div class="nav-toggle">
+                <button class="nav-toggle-btn"><i class="fas fa-bars"></i></button>
+            </div>
+            <ul class="nav-list">
+                <li class="<%= (page=='admin_index' ? 'active' : '') %>">
+                    <a href="/admin/forside">
+                        <i class="fas fa-home"></i>Forsiden
+                    </a>
+                </li>
+
+                <li class="<%= (page=='admin_users' ? 'active' : '') %>">
+                    <a href="/admin/brugere">
+                        <i class="fas fa-users-cog"></i>Brugere
+                    </a>
+                </li>
+
+                <li class="<%= (page=='admin_products' ? 'active' : '') %>">
+                    <a href="/admin/produkter">
+                        <i class="fas fa-toolbox"></i>Produkter
+                    </a>
+                </li>
+
+                <li class="<%= (page=='admin_categories' ? 'active' : '') %>">
+                    <a href="/admin/kategorier">
+                        <i class="fas fa-cubes"></i>Kategorier
+                    </a>
+                </li>
+
+                <li class="<%= (page=='admin_orders' ? 'active' : '') %>">
+                    <a href="/admin/ordrer">
+                        <i class="fas fa-globe-europe"></i>Ordrer
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/logud">
+                        <i class="fas fa-sign-out-alt"></i>Logud
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main -->
+        <main class="main_admin">
+            <div class="content_wrapper_admin">
+                <%- content %>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <h2>2019 Andreas Kraft</h2>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelector('.nav-toggle-btn').addEventListener('click', (event) => {
+            event.preventDefault();
+            // console.log('clicked');
+            let navList = document.querySelector('.nav-list');
+            navList.classList.toggle('toggleShow');
+        })
+    </script>
+</body>
+
+</html>

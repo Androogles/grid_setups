@@ -1,0 +1,95 @@
+<% extend('../partials/template') %>
+<form id="login_form" class="forms" action="/logind" method="post">
+    <div class="choiches">
+    <!-- email eller brugernavn -->
+    <div class="form_choiche">
+            <div class="form_text">
+                <div class="form_title">
+                    <label for="user_email">Email</label>
+                </div>
+    
+                <div class="form_error">
+                    <span id="err_email" class="error_msg">
+                        <%= (typeof error_msg != 'undefined' ? error_msg.email : '') %>
+                    </span>
+                </div>
+            </div>
+    
+            <div class="form_field">
+                <input type="text" id="user_email" name="user_email" value="<%= signature_value %>" placeholder="Indtast email eller brugernavn">
+            </div>
+        </div>
+    
+        <!-- kodeord -->
+        <div class="form_choiche">
+            <div class="form_text">
+                <div class="form_title">
+                    <label for="user_password">Kodeord</label>
+                </div>
+    
+                <div class="form_error">
+                    <span id="err_password" class="error_msg"><%= (typeof error_msg != 'undefined' ? error_msg.password : '') %></span>
+    
+                    <span id="match_error" class="error_msg"><%= match_error %></span>
+                </div>
+            </div>
+    
+            <div class="form_field">
+                <input type="password" name="user_password" id="user_password" placeholder="Indtast kode">
+            </div>
+        </div>
+    </div> <!-- Choiches End -->
+
+    <!-- knapper -->
+    <div class="form_actions">
+        <button class="btn linear_gr" type="submit">Logind</button>
+        <a class="link_basic" href="/glemt_kodeord">Glemt Kode?</a>
+        <a class="link_basic" href="/opret">Ikke Medlem?</a>
+    </div>
+</form>
+
+<script>
+    document.querySelector('#login_form button').addEventListener('click', (event) => {
+        event.preventDefault();
+        // ryd alle eksisterende fejleskeder 
+        let error_messages = document.querySelectorAll('.error_msg');
+        error_messages.forEach(function (error_msg) {
+            error_msg.textContent = '';
+        });
+
+        let form = document.querySelector('#login_form');
+        // form.submit();
+
+        // hent alle værdierne fra formular felterne 
+        let values = {};
+        for (let i = 0; i < form.length; i++) {
+            // '.name.split('_')[1]' benyttes til at fjerne 'user_' fra hvert et felt
+            if (form[i].name.split('_')[1] != undefined) {
+                values[form[i].name.split('_')[1]] = form[i].value;
+            }
+        }
+
+        // Opret tomt json objekt til fejlbeskeder
+        let error_msg = {};
+
+        // Validering af værdier oprettelse af fejlbeskeds nøgler
+        if (values.email == undefined || values.email == "") {
+            error_msg.email = "Udfyld email eller navn (Client Side)";
+        }
+
+        if (values.password == undefined || values.password == "") {
+            error_msg.password = "Udfyld kodeord (Client Side)";
+        }
+
+        // hvis der er 1 eller flere fejl, skal der udskrives fejl eller sendes form 
+        if (Object.keys(error_msg).length > 0) {
+            Object.keys(error_msg).forEach(function (key) {
+                // key feltet der indeholder en fejl for at finde span tagget der hvor '#err_' skal fjernes
+                document.querySelector(`#err_${key}`).textContent = error_msg[key];
+            });
+        }
+        else {
+            form.submit();
+        }
+    })
+</script>

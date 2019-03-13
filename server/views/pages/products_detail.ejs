@@ -1,0 +1,48 @@
+<% extend ('../partials/template') %>
+
+<div id="detail" data-id="<%= one_product.product_id %>" data-name="<%= one_product.product_name %>"
+    data-price="<%= one_product.product_price %>">
+    
+    <p><%= one_product.product_name %></p>
+
+
+    <p><%= one_product.product_price %></p>
+
+    <p>
+        <%= one_product.product_description %>
+    </p>
+
+    <img src="/images/products/<%= one_product.product_image %>" alt="Produkt billede">
+
+    
+    <input type="number" id="amount" value="1">
+    
+    <button class="addProduct" type="button">Tilføj til kurv</button>
+
+    <a href="/produkter/kategori/<%= one_product.category_id %>">Tilbage</a>
+</div>
+
+
+<script>
+    // finder alle 'put i kurv' knapperne og knytter et click event til dem
+    document.querySelectorAll('.addProduct').forEach(button => {
+        button.addEventListener('click', (event) => {
+            // find den række knappen høre til
+            let addProduct = document.querySelector("#detail");
+            // tag værdierne fra hvert element på knappen række
+            let id = addProduct.dataset['id'];
+            let name = addProduct.dataset['name'];
+            let price = addProduct.dataset['price'];
+            let amount = document.querySelector('#amount').value;
+
+            // her kaldes metoden der gemmer produktet i kurven
+            Cart.AddToCart(id, name, price, amount);
+
+            // sæt inputfeltet tilbage til 1
+            document.querySelector('#amount').value = 1;
+
+            // her kaldes den funktion der er knyttet til kurven på template siden
+            updateMiniCart();
+        })
+    }) 
+</script>

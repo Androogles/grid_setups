@@ -1,0 +1,63 @@
+<% extend('../partials/template_admin') %>
+
+<% if(all_orders.length > 0) { %>
+<table>
+    <thead>
+        <tr>
+            <th>Slet</th>
+            <th>Dato</th>
+            <th>Fulde Navn</th>
+            <th>Status</th>
+            <th>Mere</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <% (all_orders || []).forEach(order =>{ %>
+        <tr>
+
+            <td>
+                <a href="/admin/ordrer/slet/<%= order.order_id %>" onclick="return confirm('Er du sikker?')">Slet</a>
+            </td>
+
+            <td>
+                <%= order.order_date %>
+            </td>
+
+            <td>
+                <%= order.user_firstname + ' ' + order.user_lastname %>
+            </td>
+
+            <td>
+                <select name="status" id="status" data-id="<%= order.order_id %>" onchange="updateOrder(this)">
+                    <% (all_statuses || []).forEach(status =>{ %>
+                    <option value="<%= status.order_status_id %>" <%=(status.order_status_id==order.order_status_id ?
+                        'selected' : "" ) %>>
+                        <%= status.order_status_name %>
+                    </option>
+                    <% }) %>
+                </select>
+            </td>
+
+            <td>
+                <a href="/admin/ordre/detalje/<%= order.order_id %>">info</a>
+            </td>
+        </tr>
+        <% }) %>
+    </tbody>
+</table>
+<% } %>
+
+<script>
+    // Valider!!
+    // Redigere status
+    function updateOrder(select) {
+        fetch("http://localhost:3000/admin/api/ordre_status/" + select.dataset["id"] + "/" + select.value)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+</script>

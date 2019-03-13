@@ -1,0 +1,21 @@
+<% extend('../partials/template') %>
+
+<% if(step == "step_error") { %>
+    <h2><%= message %>!</h2>
+    <p>Prøv igen</p>
+    <a class="btn linear_gr" href="/opret">Opret</a>
+<% } %>
+
+<% if(step == "step1") { %>
+    <h2>Næsten færdig!</h2>
+    <p>Din konto er registreret, og du har modtaget en mail med linket til at aktivere din konto,
+        Din konto skal være aktiv før du kan logge ind.
+    </p>
+    <a href="http://localhost:8081" target="_BLANC" class="btn linear_gr">Mailslurper</a>
+<% } %>
+
+<% if(step == "step2") { %>
+    <h2>Tillykke!</h2>
+    <p><%= message %></p>
+    <a class="btn linear_gr" href="/logind">Logind</a>
+<% } %>

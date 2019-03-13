@@ -1,0 +1,86 @@
+<% extend('../partials/template') %>
+<div class="products_wrapper">
+    <% if(products.length > 0) { %>
+        <% (products || []).forEach(product =>{ %>
+            <div class="product_box">
+                <section class="leftSide">
+                    <div class="leftSide_top">
+                        <p class="product_name" data-id="<%= product.product_id %>" data-name="<%= product.product_name %>">
+                            <%= product.product_name %>
+                        </p>
+        
+                        <p class="product_model">
+                            <%= product.product_model  %>
+                        </p>
+                        
+                        <p class="product_description">
+                            <%= product.product_description %>
+                        </p>
+                    </div>
+
+                    <div class="leftSide_bottom">
+                        <a class="product_detailLink" href="/produkter/detalje/<%= product.product_id %>">Mere info</a>
+                        
+                        <p class="product_inventory">
+                            <%= 'På Lager' + ' ' + product.product_inventory %>
+                        </p>
+                        
+                        <p class="product_price" data-price="<%= product.product_price %>">
+                            <%= 'Pris:' + ' ' + product.product_price + 'kr.' %>
+                        </p>
+                    </div>                    
+                </section>
+
+                <section class="middlePart">           
+                        <input class="product_amount" type="number" id="amount" value="1">
+                    
+                        <button class="buy" type="button">Tilføj til kurv</button>
+                </section>
+
+                <section class="rightSide">
+                    <img class="product_image" src="/images/products/<%= product.product_image %>" alt="Produkt billede">
+                </section>
+            </div>
+        <% }); %>
+    <% } %>
+</div>
+
+<div class="page_numbers_div">
+        Side
+        <% for(let i = 1; i <= Math.ceil(product_count / page_limit); i++) { %>
+        <ul>
+            <li>
+                <a href="/produkter/kategori/<%= params %>?page=<%= i %>" class="<%= (page_current == i ? 'active' : '') %>">
+                    <%= i %>
+                </a>
+            </li>
+        </ul>
+        <% } %>
+</div>
+
+
+
+<script>
+    // finder alle 'put i kurv' knapperne og knytter et click event til dem
+    document.querySelectorAll('.buy').forEach(button => {
+        button.addEventListener('click', (event) => {
+            // find den række knappen høre til
+            let row = event.target.parentNode.parentNode;
+            
+            // tag værdierne fra hvert element på knappen række
+            let id = row.querySelector('.product_name').dataset['id'];
+            let name = row.querySelector('.product_name').dataset['name'];
+            let price = row.querySelector('.product_price').dataset['price'];
+            let amount = row.querySelector('.product_amount').value;
+
+            // her kaldes metoden der gemmer produktet i kurven
+            Cart.AddToCart(id, name, price, amount);
+
+            // sæt inputfeltet tilbage til 1
+            row.querySelector('.product_amount').value = 1;
+
+            // her kaldes den funktion der er knyttet til kurven på template siden
+            updateMiniCart();
+        })
+    }) 
+</script>

@@ -1,0 +1,111 @@
+<% extend('../partials/template') %>
+<% if(newpass == '') { %>
+    <form id="reset_form" class="forms" method="post">
+        <div class="choiches">
+            <!-- kodeord -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="user_password">Kodeord</label>
+                    </div>
+
+                    <div class="form_error">
+                        <span id="err_password" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.password : '') %>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form_field">
+                    <input type="password" name="user_password" id="user_password" value="" placeholder="Indtast Kodeord">
+                </div>
+            </div>
+
+            <!-- gentag kodeord -->
+            <div class="form_choiche">
+                <div class="form_text">
+                    <div class="form_title">
+                        <label for="user_repeatPassword">Gentag</label>
+                    </div>
+
+                    <div class="form_error">
+                        <span id="err_repeatPassword" class="error_msg">
+                            <%= (typeof error_msg != 'undefined' ? error_msg.repeatPassword : '') %>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Må ikke nangives repeat da det allerede er en indbygget funktionerne, der henter values fra fejl og 
+                input felter, skære ordet i stykker. og selv hvis man kalder den user_repeat_password skær den af 
+                user_repeat_ af så der kun er password tilbgage (Brug CAMELCASE)-->
+                <div class="form_field">
+                    <input type="password" name="user_repeatPassword" id="user_repeatPassword" value="" placeholder="Gentag Kodeord">
+                </div>
+            </div>
+        </div> <!-- Choiches End -->
+
+        <!-- knapper -->
+        <div class="form_actions">
+            <button class="btn linear_gr">Rediger</button>
+        </div>
+    </form>
+<% } else if(newpass == 'success') { %>
+    <h2>Din kode blev rettet</h2>
+    <p>Følg knappen til Logind side</p>
+    <a href="/logind" class="btn linear_gr">Logind</a>
+<% } else if(newpass == 'error') {  %>
+    <h2>Noget gik galt...</h2>
+    <p>Nøglen er ugyyldig eller udløbet!</p>
+    <a href="/glemt_kodeord" class="btn linear_gr">Prøv igen?</a>
+<% } %>
+
+
+<script>
+    document.querySelector('#reset_form button').addEventListener('click', (event) => {
+        event.preventDefault();
+        // ryd alle eksisterende fejleskeder 
+        let error_messages = document.querySelectorAll('.error_msg');
+        error_messages.forEach(function (error_msg) {
+            error_msg.textContent = '';
+        });
+
+        // Form
+        let form = document.querySelector('#reset_form');
+        // form.submit();
+
+        // hent alle værdierne fra formular felterne 
+        let values = {};
+        for (let i = 0; i < form.length; i++) {
+            // '.name.split('_')[1]' benyttes til at fjerne 'user_' fra hvert et felt
+            if (form[i].name.split('_')[1] != undefined) {
+                values[form[i].name.split('_')[1]] = form[i].value;
+            }
+        }
+        
+        // Opret tomt json objekt til fejlbeskeder
+        let error_msg = {};
+
+        if (values.password == undefined || values.password == "") {
+            error_msg.password = "Udfyld Kodeord (Client Side)";
+        }
+
+        if (values.repeatPassword == undefined || values.repeatPassword == "") {
+            error_msg.repeatPassword = "Gentag Kodeord (Client Side)";
+        } 
+
+        if (values.repeatPassword != '' && values.password !== values.repeatPassword) {
+            error_msg.repeatPassword = "Kodeord Matcher ikke (Client Side)";
+        }
+
+        // hvis der er 1 eller flere fejl, skal der udskrives fejl eller sendes form 
+        if (Object.keys(error_msg).length > 0) {
+            Object.keys(error_msg).forEach(function (key) {
+                // key feltet der indeholder en fejl for at finde span tagget der hvor '#err_' skal fjernes
+                document.querySelector(`#err_${key}`).textContent = error_msg[key];
+            });
+        }
+        else {
+            form.submit();
+        }
+    })
+</script>

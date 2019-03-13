@@ -1,0 +1,85 @@
+<% extend ('../partials/template_admin') %>
+
+<section>
+    <p>
+        <%= 'Fulde Navn: ' + one_order.user_firstname + ' ' + one_order.user_lastname %>
+    </p>
+
+    <p>
+        <%= 'Brugernavn: ' + one_order.user_name %>
+    </p>
+    
+    <img width="200px" src="/images/users/<%= one_order.user_image %>" alt="user Thumb">
+
+    <p>
+        <%= 'Adresse: ' + one_order.user_address %>
+    </p>
+
+    <p>
+        <%= 'By: ' + one_order.user_city %> 
+    </p>
+
+    <p>
+        <%= 'Postnummer: ' + one_order.user_areacode %>
+    </p>
+
+    <p>
+        <%= 'Email: ' + one_order.user_email %>
+    </p>
+
+    <p>
+        <%= 'Ordreid nr. ' + one_order.order_id %>
+    </p>
+
+    <p>
+        <%= 'Ordre status: ' + one_order.order_status_name %>
+    </p>
+
+
+
+    <% if(all_order_lines_from_orders.length > 0) { %>
+    <table>
+        <thead>
+            <tr>
+                <th>Produkt id</th>
+                <th>Navn</th>
+                <th>Model</th>
+                <th>Billede</th>
+                <th>Antal</th>
+                <th>Pris</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% (all_order_lines_from_orders || []).forEach(order_line =>{ %>
+            <tr>
+                <td>
+                    <%= order_line.product_id %>
+                </td>
+
+                <td>
+                    <%= order_line.product_name %>
+                </td>
+
+                <td>
+                    <%= order_line.product_model %>
+                </td>
+
+                <td>
+                    <img width="75px" src="/images/products/resized/<%= order_line.product_image %>" alt="Produkt thumb">
+                </td>
+
+                <td>
+                    <%= order_line.order_line_amount %>
+                </td>
+
+                <td>
+                    <%= order_line.order_line_price %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <% } %>
+
+    <a href="/admin/ordrer">Tilbage</a>

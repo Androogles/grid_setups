@@ -1,0 +1,141 @@
+<% extend('../partials/template') %>
+
+<table id="update_cart">
+    <thead>
+        <tr>
+            <th>Stk</th>
+            <th>Podukt</th>
+            <th>Per. stk.</th>
+            <th>I alt</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody></tbody>
+
+    <tfoot>
+        <td colspan="3">Samlet pris:</td>
+        <td style="text-align:right;" id="total_price"></td>
+    </tfoot>
+</table>
+
+<button class="btn linear_gr" id="end_order">Bestil</button>
+
+<br>
+<a href="/produkter/kategori/<%= first_subcategory_id %>">Shop Videre</a>
+
+<script>
+    function update_cart() {
+        let cart_list = document.querySelector('#update_cart tbody')
+        // tøm listen så vi undgår gentagelser
+        while (cart_list.hasChildNodes()) {
+            cart_list.removeChild(cart_list.firstChild);
+        }
+
+        // hent indholdet af kurven
+        let cart_content = Cart.TakeCart();
+
+        // For hvert produkt oprettes de nødvendige data, til at skabe et table
+        cart_content.forEach(product => {
+            let name = document.createElement('td');
+            name.setAttribute('data-id', product.product_id);
+            name.textContent = product.product_name;
+
+            let price = document.createElement('td');
+            price.textContent = product.product_price.toFixed(2);
+
+            let amount = document.createElement('td');
+            let input = document.createElement('input');
+            input.setAttribute('type', 'number');
+            input.setAttribute('name', 'amount');
+            input.value = product.product_amount;
+            amount.appendChild(input);
+
+
+            // beregn hvad denne linjes totalpris er :
+            let total = document.createElement('td');
+            total.textContent = (product.product_price * product.product_amount).toFixed(2);
+
+            let remove = document.createElement('td');
+            let button = document.createElement('button');
+            button.textContent = 'Slet';
+            button.addEventListener('click', (event) => {
+                Cart.RemoveProductFromCart(product.product_id);
+                update_cart();
+                updateMiniCart();
+            });
+            remove.appendChild(button);
+
+            // Knyt alle felterne til rækken
+            let row = document.createElement('tr');
+            row.appendChild(amount);
+            row.appendChild(name);
+            row.appendChild(price);
+            row.appendChild(total);
+            row.appendChild(remove);
+
+            // knyt rækken til tabellen
+            cart_list.appendChild(row);
+        });
+
+        // vis kurvens total pris .. en alternativ metode end ved minikurven
+        // if (cart_content.length > 0) {
+        document.querySelector('table tfoot td:nth-child(2)').textContent = Cart.Total.toFixed(2);
+        // }
+
+        addChangeEventToInputs();
+    }
+    update_cart();
+
+
+    // opdatere tabellerne når man går ud af input feltet
+    function addChangeEventToInputs() {
+        let inputs = document.querySelectorAll('#update_cart input');
+        inputs.forEach(input => {
+            input.addEventListener('change', (event) => {
+                let row = event.target.parentNode.parentNode; 
+                // console.log(row);
+                let id = row.childNodes[1].dataset['id'];
+                let amount = row.childNodes[0].childNodes[0].value;
+                // fjern produktet hvis der er nul eller mindre i amount
+                if (amount <= 0) {
+                    Cart.RemoveProductFromCart(id);
+                    update_cart();
+                    updateMiniCart();
+                } else {
+                    // Hent prisen ud af rækken, så rækken total kan opdateres
+                    let price = parseFloat(row.childNodes[2].textContent);
+                    row.childNodes[3].textContent = (price * amount).toFixed(2);
+                    Cart.EditProduct(id, amount);
+                    document.querySelector('table tfoot td:nth-child(2)').textContent = Cart.Total.toFixed(2);
+                    updateMiniCart();
+                }
+            });
+        });
+    }
+
+    document.querySelector('#end_order').addEventListener('click', (event) => {
+        let submitSettings = {
+            'method': 'post',
+            'headers': new Headers({
+                'Content-Type': 'application/json'
+            }),
+            'body': localStorage['cart']
+            // 'body': JSON.stringify(Kurv.TagKurv())
+        }
+        fetch('http://localhost:3000/bruger/api/ordre', submitSettings)
+            .then(response => {
+                console.log(response);
+                // her kunne man evt, lave en statusbesked til kunden, hvis noget gik galt, kreditkort gik ikke igennem, (fejl)
+                // tøm kurven
+                Cart.DeleteCart();
+                update_cart();
+                updateMiniCart();
+                // send kunden til forsiden eller en tak for din ordre side.
+                window.location.replace('/');
+            })
+            .catch(error => {
+                console.log('error', error);
+            })
+    });
+</script>
